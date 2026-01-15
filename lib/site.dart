@@ -16,6 +16,7 @@ class _sitepageState extends State<sitepage> {
   TextEditingController cont2=TextEditingController();
   ValueNotifier errornoti=ValueNotifier(false);
   ValueNotifier loadingscreen=ValueNotifier(false);
+  late Stream<DocumentSnapshot> studentFuture;
 
   @override
   void initState(){
@@ -24,7 +25,12 @@ class _sitepageState extends State<sitepage> {
     // Read query parameter from URL
     Uri uri = Uri.base; // e.g. https://yourapp.com/reset-password?oobCode=12345
     oobcode = uri.queryParameters['oobCode'];
+    user = uri.queryParameters['user'];
     print("OOB code: $oobcode");
+    studentFuture = FirebaseFirestore.instance
+      .collection('students')
+      .doc(user)
+      .snapshots();
     
   }
 
@@ -37,37 +43,36 @@ class _sitepageState extends State<sitepage> {
           code: oobcode,
           newPassword: cont1.text
         );
+        loadingscreen.value=false;
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Container(width: double.infinity,child: Text('Password changed successfully',style: TextStyle(fontWeight: FontWeight.w600),),),
+
+            );
+          },
+        );
       }catch(e){
         loadingscreen.value=false;
         showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
-              content: Container(width: double.infinity,alignment: Alignment.center,child: Text('Sorry, process failed',style: TextStyle(fontWeight: FontWeight.w600),),),
+              content: Container(width: double.infinity,child: Text('Sorry, process failed',style: TextStyle(fontWeight: FontWeight.w600),),),
 
             );
           },
         );
       }
-      finally{
-        loadingscreen.value=false;
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Container(width: double.infinity,alignment: Alignment.center,child: Text('Password changed successfully',style: TextStyle(fontWeight: FontWeight.w600),),),
-
-            );
-          },
-        );
-      }
+      
     }
     else{
       showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
-              content: Container(width: double.infinity,alignment: Alignment.center,child: Text('Invalid attempt',style: TextStyle(fontWeight: FontWeight.w600),),),
+              content: Container(width: double.infinity,child: Text('Invalid attempt',style: TextStyle(fontWeight: FontWeight.w600),),),
 
             );
           },
@@ -83,14 +88,17 @@ class _sitepageState extends State<sitepage> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           double containerwidth=constraints.maxWidth;
-          return FutureBuilder(
-            future: FirebaseFirestore.instance.collection('students').doc('fM21pcRYsdd8KRoZk7eSfyhHjKn1').get(),
+          return StreamBuilder(
+            stream: studentFuture,
             builder: (context, snapshot) {
               if(snapshot.connectionState==ConnectionState.waiting){
                 return Container(
                   alignment: Alignment.center,
                   child: CircularProgressIndicator(),
                 );
+              }
+              if (!snapshot.hasData || !snapshot.data!.exists) {
+                return Center(child: Text("Invalid or unknown user"));
               }
               return ValueListenableBuilder(
                 valueListenable: loadingscreen,
@@ -99,7 +107,7 @@ class _sitepageState extends State<sitepage> {
                     children: [
                       if(loadingscreen.value==true)
                       Expanded(child: Container(
-                        color: Colors.grey,
+                        color: const Color.fromARGB(255, 193, 47, 47),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -123,7 +131,7 @@ class _sitepageState extends State<sitepage> {
                             mainAxisSize: MainAxisSize.min,
                             
                             children: [
-                              Text('Hello, ${snapshot.data!.data()!['Name']}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                              Text('Hello, ${(snapshot.data!.data()! as Map)['name']}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: TextField(
