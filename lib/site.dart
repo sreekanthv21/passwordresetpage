@@ -27,10 +27,7 @@ class _sitepageState extends State<sitepage> {
     oobcode = uri.queryParameters['oobCode'];
     user = uri.queryParameters['user'];
     print("OOB code: $oobcode");
-    studentFuture = FirebaseFirestore.instance
-      .collection('students')
-      .doc(user)
-      .snapshots();
+    
     
   }
 
@@ -89,7 +86,10 @@ class _sitepageState extends State<sitepage> {
         builder: (context, constraints) {
           double containerwidth=constraints.maxWidth;
           return StreamBuilder(
-            stream: studentFuture,
+            stream: FirebaseFirestore.instance
+            .collection('students')
+            .doc(user)
+            .snapshots(),
             builder: (context, snapshot) {
               if(snapshot.connectionState==ConnectionState.waiting){
                 return Container(
