@@ -131,7 +131,7 @@ class _sitepageState extends State<sitepage> {
                             mainAxisSize: MainAxisSize.min,
                             
                             children: [
-                              Text('Hello, ${(snapshot.data!.data()! as Map)['name']}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                              Text('Hello, sdfsd',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: TextField(
