@@ -85,11 +85,11 @@ class _sitepageState extends State<sitepage> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           double containerwidth=constraints.maxWidth;
-          return StreamBuilder(
-            stream: FirebaseFirestore.instance
+          return FutureBuilder(
+            future: FirebaseFirestore.instance
             .collection('students')
             .doc(user)
-            .snapshots(),
+            .get(),
             builder: (context, snapshot) {
               if(snapshot.connectionState==ConnectionState.waiting){
                 return Container(
