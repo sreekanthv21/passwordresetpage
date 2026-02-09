@@ -13,7 +13,8 @@ class _sitepageState extends State<sitepage> {
   late final user;
   late final oobcode;
   var userdeets;
-  ValueNotifier pageshifter=ValueNotifier(true);
+  bool userdeetsLoading=true;
+  
   TextEditingController cont1=TextEditingController();
   TextEditingController cont2=TextEditingController();
   ValueNotifier errornoti=ValueNotifier(false);
@@ -38,10 +39,15 @@ class _sitepageState extends State<sitepage> {
   void deetspuller()async{
     try{
       userdeets=await FirebaseFirestore.instance.collection('students').doc(user).get();
-      pageshifter.value=!pageshifter.value;
+      setState(() {
+        userdeetsLoading=false;
+      });
       
     }catch(e){
       userdeets='failed';
+      setState(() {
+        userdeetsLoading=false;
+      });
     }
   }
 
@@ -100,66 +106,104 @@ class _sitepageState extends State<sitepage> {
         builder: (context, constraints) {
           double containerwidth=constraints.maxWidth;
           return ValueListenableBuilder(
-            valueListenable: pageshifter,
-            builder: (context, value, child) {
-              return ValueListenableBuilder(
-                    valueListenable: loadingscreen,
-                    builder: (context, value, child) {
-                      return Stack(
-                        children: [
-                          if(loadingscreen.value==true)
-                          Expanded(child: Container(
-                            color: const Color.fromARGB(255, 193, 47, 47),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CircularProgressIndicator(),
-                                Text('Processing...')
-                              ],
-              
-                            ),
-                          )),
-                          if(userdeets==null || !userdeets.exists)
-                          Expanded(child: Container(
-                            color: const Color.fromARGB(255, 193, 47, 47),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                
-                                Text('User not found')
-                              ],
-              
-                            ),
-                          )),
-
-                          if(userdeets!=null && !userdeets.isEmpty)
-                          Center(
-                            child: Container(
-                              margin: EdgeInsets.all(10),
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: const Color.fromARGB(255, 255, 255, 255),
-                                border: Border.all(width: 1)
+                valueListenable: loadingscreen,
+                builder: (context, value, child) {
+                  return Stack(
+                    children: [
+                      if(loadingscreen.value==true)
+                      Expanded(child: Container(
+                        color: const Color.fromARGB(255, 193, 47, 47),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(),
+                            Text('Processing...')
+                          ],
+          
+                        ),
+                      )),
+                      if(userdeetsLoading)
+                      Expanded(child: Container(
+                        color: const Color.fromARGB(255, 193, 47, 47),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(),
+                            
+                          ],
+          
+                        ),
+                      )),
+                      if(userdeets==null || !userdeets.exists)
+                      Expanded(child: Container(
+                        color: const Color.fromARGB(255, 193, 47, 47),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            
+                            Text('User not found')
+                          ],
+          
+                        ),
+                      )),
+          
+                      if(userdeets!=null && userdeets.exists)
+                      Center(
+                        child: Container(
+                          margin: EdgeInsets.all(10),
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                            border: Border.all(width: 1)
+                          ),
+                          width: containerwidth*0.9,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            
+                            children: [
+                              Text('Hello, ${(userdeets.data()! as Map)['name']}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextField(
+                                  controller: cont1,
+                                  cursorColor: const Color.fromARGB(255, 79, 79, 79),
+                                  decoration: InputDecoration(
+                                    labelText: 'New Password',
+                                    labelStyle: TextStyle(
+                                      color: Colors.black
+                                    ),
+                                    floatingLabelStyle: TextStyle(color: const Color.fromARGB(255, 113, 113, 113)),
+                                   
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(width: 1),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(width: 2,color: const Color.fromARGB(255, 0, 0, 0)),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    fillColor: const Color.fromARGB(255, 255, 255, 255),
+                                    filled: true,
+                                  ),
+                                ),
                               ),
-                              width: containerwidth*0.9,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                
-                                children: [
-                                  Text('Hello, ${(userdeets.data()! as Map)['name']}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: TextField(
-                                      controller: cont1,
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ValueListenableBuilder(
+                                  valueListenable: errornoti,
+                                  builder: (context, value, child) {
+                                    return TextField(
+                                      obscureText: true,
+                                      controller: cont2,
                                       cursorColor: const Color.fromARGB(255, 79, 79, 79),
                                       decoration: InputDecoration(
-                                        labelText: 'New Password',
+                                        errorText: errornoti.value==true?'Both fields should match':null,
+                                        labelText: 'Confirm Password',
                                         labelStyle: TextStyle(
                                           color: Colors.black
                                         ),
                                         floatingLabelStyle: TextStyle(color: const Color.fromARGB(255, 113, 113, 113)),
-                                       
                                         border: OutlineInputBorder(
                                           borderSide: BorderSide(width: 1),
                                           borderRadius: BorderRadius.circular(10),
@@ -168,96 +212,65 @@ class _sitepageState extends State<sitepage> {
                                           borderSide: BorderSide(width: 2,color: const Color.fromARGB(255, 0, 0, 0)),
                                           borderRadius: BorderRadius.circular(10),
                                         ),
+                                        
                                         fillColor: const Color.fromARGB(255, 255, 255, 255),
                                         filled: true,
                                       ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ValueListenableBuilder(
-                                      valueListenable: errornoti,
-                                      builder: (context, value, child) {
-                                        return TextField(
-                                          obscureText: true,
-                                          controller: cont2,
-                                          cursorColor: const Color.fromARGB(255, 79, 79, 79),
-                                          decoration: InputDecoration(
-                                            errorText: errornoti.value==true?'Both fields should match':null,
-                                            labelText: 'Confirm Password',
-                                            labelStyle: TextStyle(
-                                              color: Colors.black
-                                            ),
-                                            floatingLabelStyle: TextStyle(color: const Color.fromARGB(255, 113, 113, 113)),
-                                            border: OutlineInputBorder(
-                                              borderSide: BorderSide(width: 1),
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(width: 2,color: const Color.fromARGB(255, 0, 0, 0)),
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            
-                                            fillColor: const Color.fromARGB(255, 255, 255, 255),
-                                            filled: true,
-                                          ),
-                                        );
-                                      }
-                                    ),
-                                  ),
-                                  SizedBox(height: 10,),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      if(cont1.text!=cont2.text){
-                                        errornoti.value=true;
-                                      }
-                                      else{
-                                        errornoti.value=false;
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              alignment: Alignment.center,
-                                              title: Container(width: double.infinity,alignment: Alignment.center,child: Text('Confirmation',style: TextStyle(fontWeight: FontWeight.bold),)),
-                                              content: Text('Are you sure you want to change the password?',style: TextStyle(fontWeight: FontWeight.w600),),
-                                              actions: [
-                                                ElevatedButton(
-                                                  onPressed: () async{
-                                                    Navigator.pop(context);
-                                                    confirmreset();
-                                                  },
-                                                  style: ButtonStyle(
-                                                    side: WidgetStatePropertyAll(BorderSide(width: 1)),
-                                                    shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                                                    backgroundColor: WidgetStatePropertyAll(Colors.black),
-                                                    foregroundColor: WidgetStatePropertyAll(Colors.white)
-                                                  ),
-                                                  child: Text('Confirm',style: TextStyle(fontWeight: FontWeight.bold),),
-                                                )
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      }
-                                    },
-                                    style: ButtonStyle(
-                                      side: WidgetStatePropertyAll(BorderSide(width: 1)),
-                                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                                      backgroundColor: WidgetStatePropertyAll(Colors.black),
-                                      foregroundColor: WidgetStatePropertyAll(Colors.white)
-                                    ),
-                                    child: Text('Change Password'),
-                                  )
-                                ],
+                                    );
+                                  }
+                                ),
                               ),
-                            ),
+                              SizedBox(height: 10,),
+                              ElevatedButton(
+                                onPressed: () {
+                                  if(cont1.text!=cont2.text){
+                                    errornoti.value=true;
+                                  }
+                                  else{
+                                    errornoti.value=false;
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          alignment: Alignment.center,
+                                          title: Container(width: double.infinity,alignment: Alignment.center,child: Text('Confirmation',style: TextStyle(fontWeight: FontWeight.bold),)),
+                                          content: Text('Are you sure you want to change the password?',style: TextStyle(fontWeight: FontWeight.w600),),
+                                          actions: [
+                                            ElevatedButton(
+                                              onPressed: () async{
+                                                Navigator.pop(context);
+                                                confirmreset();
+                                              },
+                                              style: ButtonStyle(
+                                                side: WidgetStatePropertyAll(BorderSide(width: 1)),
+                                                shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                                                backgroundColor: WidgetStatePropertyAll(Colors.black),
+                                                foregroundColor: WidgetStatePropertyAll(Colors.white)
+                                              ),
+                                              child: Text('Confirm',style: TextStyle(fontWeight: FontWeight.bold),),
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                                style: ButtonStyle(
+                                  side: WidgetStatePropertyAll(BorderSide(width: 1)),
+                                  shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                                  backgroundColor: WidgetStatePropertyAll(Colors.black),
+                                  foregroundColor: WidgetStatePropertyAll(Colors.white)
+                                ),
+                                child: Text('Change Password'),
+                              )
+                            ],
                           ),
-                        ],
-                      );
-                    }
+                        ),
+                      ),
+                    ],
                   );
-            }
-          );
+                }
+              );
             
           
         },
