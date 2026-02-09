@@ -119,7 +119,7 @@ class _sitepageState extends State<sitepage> {
               
                             ),
                           )),
-                          if(userdeets==null || userdeets.isEmpty)
+                          if(userdeets==null || !userdeets.exists)
                           Expanded(child: Container(
                             color: const Color.fromARGB(255, 193, 47, 47),
                             child: Column(
