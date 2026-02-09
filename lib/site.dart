@@ -258,17 +258,19 @@ class _sitepageState extends State<sitepage> {
                         ),
                       ),
                       if(userdeetsLoading)
-                      Expanded(child: Container(
-                        color: const Color.fromARGB(255, 255, 255, 255),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircularProgressIndicator(),
-                            
-                          ],
-          
+                      Positioned.fill(
+                        child: Container(
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(),
+                              
+                            ],
+                                  
+                          ),
                         ),
-                      )),
+                      ),
                     ],
                   );
                 }
