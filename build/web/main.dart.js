@@ -73758,7 +73758,7 @@ return A.apj(new A.agO(s,b.b),s.z,t.z)},
 $S:472}
 A.agO.prototype={
 $3(a,b,c){var s,r,q,p,o,n,m,l=null,k=t.R,j=A.c([],k),i=this.a
-if(i.f.gvD()&&!i.r){s=A.h4(10)
+if(!i.r)if(i.f.gvD()&&i.f!=null){s=A.h4(10)
 r=A.alG(B.l,1)
 q=A.e1("Hello, "+A.l(i.f.nz().h(0,"name")),l,l,l,A.da(l,l,l,l,l,l,l,l,l,l,l,20,l,l,B.dN,l,l,!0,l,l,l,l,l,l,l,l),l,l)
 p=A.da(l,l,B.l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,!0,l,l,l,l,l,l,l,l)

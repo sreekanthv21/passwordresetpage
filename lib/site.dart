@@ -113,7 +113,8 @@ class _sitepageState extends State<sitepage> {
                       
                   
           
-                      if(userdeets.exists && !userdeetsLoading)
+                      if(!userdeetsLoading)
+                      if(userdeets.exists &&userdeets!=null)
                       Center(
                         child: Container(
                           margin: EdgeInsets.all(10),
