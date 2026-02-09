@@ -110,32 +110,8 @@ class _sitepageState extends State<sitepage> {
                 builder: (context, value, child) {
                   return Stack(
                     children: [
-                      if(loadingscreen.value==true)
-                      Positioned.fill(child: Container(
-                        color: const Color.fromARGB(255, 255, 255, 255),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            
-                            CircularProgressIndicator(),
-                            Text('Processing...')
-                          ],
-          
-                        ),
-                      )),
                       
-                      if(!userdeetsLoading && (userdeets==null || !userdeets.exists))
-                      Positioned.fill(child: Container(
-                        color: const Color.fromARGB(255, 255, 255, 255),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            
-                            Text('User not found')
-                          ],
-          
-                        ),
-                      )),
+                  
           
                       if(userdeets.exists && !userdeetsLoading)
                       Center(
@@ -271,6 +247,31 @@ class _sitepageState extends State<sitepage> {
                           ),
                         ),
                       ),
+                      if(!userdeetsLoading && (userdeets==null || !userdeets.exists))
+                      Positioned.fill(child: Container(
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            
+                            Text('User not found')
+                          ],
+          
+                        ),
+                      )),
+                      if(loadingscreen.value==true)
+                      Positioned.fill(child: Container(
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            
+                            CircularProgressIndicator(),
+                            Text('Processing...')
+                          ],
+          
+                        ),
+                      )),
                     ],
                   );
                 }
