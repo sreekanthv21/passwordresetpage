@@ -111,7 +111,7 @@ class _sitepageState extends State<sitepage> {
                   return Stack(
                     children: [
                       if(loadingscreen.value==true)
-                      Expanded(child: Container(
+                      Positioned.fill(child: Container(
                         color: const Color.fromARGB(255, 255, 255, 255),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -124,8 +124,8 @@ class _sitepageState extends State<sitepage> {
                         ),
                       )),
                       
-                      if(userdeets==null || !userdeets.exists)
-                      Expanded(child: Container(
+                      if(!userdeetsLoading && (userdeets==null || !userdeets.exists))
+                      Positioned.fill(child: Container(
                         color: const Color.fromARGB(255, 255, 255, 255),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
