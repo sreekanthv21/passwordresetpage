@@ -112,7 +112,7 @@ class _sitepageState extends State<sitepage> {
                     children: [
                       if(loadingscreen.value==true)
                       Expanded(child: Container(
-                        color: const Color.fromARGB(255, 193, 47, 47),
+                        color: const Color.fromARGB(255, 255, 255, 255),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -123,21 +123,10 @@ class _sitepageState extends State<sitepage> {
           
                         ),
                       )),
-                      if(userdeetsLoading)
-                      Expanded(child: Container(
-                        color: const Color.fromARGB(255, 193, 47, 47),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircularProgressIndicator(),
-                            
-                          ],
-          
-                        ),
-                      )),
+                      
                       if(userdeets==null || !userdeets.exists)
                       Expanded(child: Container(
-                        color: const Color.fromARGB(255, 193, 47, 47),
+                        color: const Color.fromARGB(255, 255, 255, 255),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -268,6 +257,18 @@ class _sitepageState extends State<sitepage> {
                           ),
                         ),
                       ),
+                      if(userdeetsLoading)
+                      Expanded(child: Container(
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(),
+                            
+                          ],
+          
+                        ),
+                      )),
                     ],
                   );
                 }
