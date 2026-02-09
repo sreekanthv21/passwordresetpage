@@ -116,6 +116,7 @@ class _sitepageState extends State<sitepage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            
                             CircularProgressIndicator(),
                             Text('Processing...')
                           ],
@@ -147,7 +148,7 @@ class _sitepageState extends State<sitepage> {
                         ),
                       )),
           
-                      if(userdeets!=null && userdeets.exists)
+                      if(userdeets.exists)
                       Center(
                         child: Container(
                           margin: EdgeInsets.all(10),
